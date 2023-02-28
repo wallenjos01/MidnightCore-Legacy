@@ -31,7 +31,7 @@ dependencies {
     implementation project(':api')
     implementation project(':common')
 
-    shade 'org.wallentines:midnightlib:1.0-SNAPSHOT'
+    //shade 'org.wallentines:midnightlib:1.0-SNAPSHOT'
 
     shade project(':api')
     shade project(':common')

@@ -58,6 +58,7 @@ dependencies {
     compileOnly project(':spigot:v1_19_R2')
 
     shade 'org.wallentines:midnightlib:1.0-SNAPSHOT'
+    shade 'org.wallentines:midnightcfg:1.0-SNAPSHOT'
 
     shade project(':api')
     shade project(':common')
@@ -87,18 +88,12 @@ dependencies {
     shade project(':spigot:v1_19_R2')
 
 
-    testImplementation 'org.wallentines:midnightlib:1.0-SNAPSHOT'
+    testRuntimeOnly 'org.wallentines:midnightlib:1.0-SNAPSHOT'
     testImplementation project(':api')
     testImplementation project(':common')
     testImplementation project(':spigot')
     testImplementation('org.jetbrains:annotations:16.0.2')
-    testImplementation('com.mojang:authlib:2.1.28')
-    testImplementation('com.mojang:datafixerupper:4.0.26')
-    testImplementation('com.mojang:brigadier:1.0.17')
     testImplementation('org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT')
-    testImplementation('org.spigotmc:spigot:1.19.3-R0.1-SNAPSHOT') {
-        transitive = false
-    }
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.0'
