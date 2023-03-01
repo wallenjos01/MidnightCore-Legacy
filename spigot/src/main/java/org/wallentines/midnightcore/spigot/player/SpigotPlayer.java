@@ -33,6 +33,11 @@ public class SpigotPlayer extends AbstractPlayer<Player> {
     }
 
     @Override
+    protected boolean isRemoved(Player player) {
+        return false;
+    }
+
+    @Override
     public String getUsername() {
         return run(pl -> {
           return AdapterManager.getAdapter().getGameProfile(pl).getName();
@@ -148,12 +153,53 @@ public class SpigotPlayer extends AbstractPlayer<Player> {
 
     @Override
     public void setGameMode(GameMode gameMode) {
-
+        run(pl -> {
+            org.bukkit.GameMode bukkit;
+            switch (gameMode) {
+                case SURVIVAL:
+                    bukkit = org.bukkit.GameMode.SURVIVAL;
+                    break;
+                case CREATIVE:
+                    bukkit = org.bukkit.GameMode.CREATIVE;
+                    break;
+                case ADVENTURE:
+                    bukkit = org.bukkit.GameMode.ADVENTURE;
+                    break;
+                case SPECTATOR:
+                    bukkit = org.bukkit.GameMode.SPECTATOR;
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
+            pl.setGameMode(bukkit);
+        }, () -> {});
     }
 
     @Override
     public GameMode getGameMode() {
-        return null;
+
+        return run(pl -> {
+
+            GameMode mcore;
+            switch (pl.getGameMode()) {
+                case SURVIVAL:
+                    mcore = GameMode.SURVIVAL;
+                    break;
+                case CREATIVE:
+                    mcore = GameMode.CREATIVE;
+                    break;
+                case ADVENTURE:
+                    mcore = GameMode.ADVENTURE;
+                    break;
+                case SPECTATOR:
+                    mcore = GameMode.SPECTATOR;
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
+            return mcore;
+
+        }, () -> null);
     }
 
     @Override

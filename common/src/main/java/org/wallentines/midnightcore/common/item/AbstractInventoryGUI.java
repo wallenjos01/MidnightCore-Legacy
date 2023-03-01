@@ -95,7 +95,6 @@ public abstract class AbstractInventoryGUI implements InventoryGUI {
         }
 
         this.onOpened(u, page);
-        this.onUpdate(u, page);
 
         this.players.put(u, page);
         openGuis.put(u, this);

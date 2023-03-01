@@ -58,6 +58,8 @@ public class FabricInventoryGUI extends AbstractInventoryGUI {
         player.connection.send(new ClientboundOpenScreenPacket(handler.containerId, handler.getType(), ConversionUtil.toComponent(title)));
         player.containerMenu = handler;
 
+        onUpdate(u, page);
+
         ((AccessorServerPlayer) player).callInitMenu(handler);
     }
 

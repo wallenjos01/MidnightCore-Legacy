@@ -78,6 +78,7 @@ public class LocationUtil {
                 player.connection.teleport(x, y, z, yaw, pitch);
             } else {
                 player.teleportTo(world, x, y, z, yaw, pitch);
+                world.getServer().getPlayerList().sendLevelInfo(player, world);
             }
 
             player.setYHeadRot(yaw);

@@ -36,7 +36,7 @@ import java.util.function.Consumer;
 public class FabricPlayer extends AbstractPlayer<ServerPlayer> {
 
 
-    private static final HashMap<ServerPlayer, Consumer<ResourcePackStatus>> AWAITING_RESOURCE_PACK = new HashMap<>();
+    private static final HashMap<UUID, Consumer<ResourcePackStatus>> AWAITING_RESOURCE_PACK = new HashMap<>();
 
     private String locale = LangProvider.getServerLocale();
 
@@ -258,7 +258,7 @@ public class FabricPlayer extends AbstractPlayer<ServerPlayer> {
 
             String outHash = hash == null ? "" : hash;
             player.connection.send(new ClientboundResourcePackPacket(url, outHash, force, ConversionUtil.toComponent(promptMessage)));
-            AWAITING_RESOURCE_PACK.put(player, onResponse);
+            AWAITING_RESOURCE_PACK.put(player.getUUID(), onResponse);
         }, () -> { });
 
     }
@@ -268,16 +268,18 @@ public class FabricPlayer extends AbstractPlayer<ServerPlayer> {
         return ((FabricServer) getServer()).getInternal().getPlayerList().getPlayer(getUUID());
     }
 
+    @Override
+    protected boolean isRemoved(ServerPlayer player) {
+        return player.isRemoved();
+    }
+
     public void setLocale(String locale) {
         this.locale = locale;
     }
 
     public static FabricPlayer wrap(ServerPlayer player) {
 
-        MidnightCoreAPI api = MidnightCoreAPI.getInstance();
-        if(api == null) throw new IllegalStateException("MidnightCoreAPI has not been created!");
-
-        MServer server = api.getServer();
+        MServer server = MidnightCoreAPI.getRunningServer();
         if(server == null) throw new IllegalStateException("The server has not been created!");
 
         return (FabricPlayer) server.getPlayer(player.getUUID());
@@ -290,7 +292,7 @@ public class FabricPlayer extends AbstractPlayer<ServerPlayer> {
     static {
 
         Event.register(ResourcePackStatusEvent.class, FabricPlayer.class, ev ->
-            AWAITING_RESOURCE_PACK.computeIfPresent(ev.getPlayer(), (k, v) -> {
+            AWAITING_RESOURCE_PACK.computeIfPresent(ev.getPlayer().getUUID(), (k, v) -> {
                 v.accept(ev.getStatus());
                 return null;
             }

@@ -80,7 +80,6 @@ public class FabricSavepoint extends AbstractSavepoint {
 
         ServerPlayer pl = FabricPlayer.getInternal(player);
 
-        if(location != null) player.teleport(location);
         if(entityTag != null) {
 
             pl.removeAllEffects();
@@ -90,6 +89,7 @@ public class FabricSavepoint extends AbstractSavepoint {
             }
         }
 
+        if(location != null) player.teleport(location);
         if(gameMode != null) pl.setGameMode(gameMode);
         if(advancements != null) advancements.load(pl, pl.getAdvancements());
     }

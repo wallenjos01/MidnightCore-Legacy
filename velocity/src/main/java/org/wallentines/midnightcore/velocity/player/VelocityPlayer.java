@@ -32,6 +32,11 @@ public class VelocityPlayer extends AbstractPlayer<Player> {
     }
 
     @Override
+    protected boolean isRemoved(Player player) {
+        return false;
+    }
+
+    @Override
     public String getUsername() {
         return run(Player::getUsername, () -> getUUID().toString());
     }

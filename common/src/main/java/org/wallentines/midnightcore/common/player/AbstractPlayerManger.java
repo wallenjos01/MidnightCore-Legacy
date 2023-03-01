@@ -36,7 +36,11 @@ public abstract class AbstractPlayerManger<T> implements PlayerManager {
     public MPlayer getPlayer(UUID u) {
 
         if(u == null) return null;
-        return cache.computeIfAbsent(u, k -> createPlayer(u));
+        return cache.computeIfAbsent(u, k -> {
+            AbstractPlayer<T> mpl = createPlayer(u);
+            if(!mpl.isOffline()) mpl.onLogin(mpl.getInternal());
+            return mpl;
+        });
     }
 
     @Override

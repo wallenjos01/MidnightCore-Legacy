@@ -35,7 +35,8 @@ public abstract class AbstractPlayer<T> implements MPlayer {
 
     @Override
     public boolean isOffline() {
-        return cache.get() == null;
+        T pl = getInternal();
+        return pl == null;
     }
 
     protected void onLogin(T player) {
@@ -43,6 +44,7 @@ public abstract class AbstractPlayer<T> implements MPlayer {
     }
 
     protected abstract T regenCache();
+    protected abstract boolean isRemoved(T player);
 
     protected <R> R run(Function<T, R> consumer, Supplier<R> def) {
         T pl = getInternal();
@@ -61,9 +63,9 @@ public abstract class AbstractPlayer<T> implements MPlayer {
 
     public T getInternal() {
         T out = cache.get();
-        if(out == null) {
+        if(out == null || isRemoved(out)) {
             out = regenCache();
-            onLogin(out);
+            if(out != null) onLogin(out);
         }
         return out;
     }
