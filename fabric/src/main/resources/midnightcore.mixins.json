@@ -25,6 +25,7 @@
     "MixinEntity",
     "MixinExplosion",
     "MixinFoodData",
+    "MixinInventoryChangeTrigger",
     "MixinItemEntity",
     "MixinItemStack",
     "MixinLivingEntity",

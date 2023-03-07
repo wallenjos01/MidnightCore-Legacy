@@ -3,6 +3,7 @@ package org.wallentines.midnightcore.fabric.mixin;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stat;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -12,10 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.wallentines.midnightcore.api.module.skin.Skin;
 import org.wallentines.midnightcore.api.module.skin.Skinnable;
-import org.wallentines.midnightcore.fabric.event.player.ContainerCloseEvent;
-import org.wallentines.midnightcore.fabric.event.player.PlayerChangeDimensionEvent;
-import org.wallentines.midnightcore.fabric.event.player.PlayerDropItemEvent;
-import org.wallentines.midnightcore.fabric.event.player.PlayerXPEvent;
+import org.wallentines.midnightcore.fabric.event.player.*;
 import org.wallentines.midnightcore.fabric.player.FabricPlayer;
 import org.wallentines.midnightlib.event.Event;
 
@@ -86,6 +84,11 @@ public class MixinServerPlayer implements Skinnable {
     private void onExpSetPoints(int i, CallbackInfo ci) {
         if(i == lastRecordedExperience) return;
         Event.invoke(new PlayerXPEvent((ServerPlayer) (Object) this, lastRecordedLevel, lastRecordedExperience));
+    }
+
+    @Inject(method="awardStat", at=@At(value="HEAD"))
+    private void onAwardStat(Stat<?> stat, int i, CallbackInfo ci) {
+        Event.invoke(new PlayerAwardStatEvent((ServerPlayer) (Object) this, stat, i));
     }
 
     @Override
