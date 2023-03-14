@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.RelativeMovement;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -57,7 +58,7 @@ public abstract class MixinServerGamePacketListener {
     }
 
     @Inject(method = "teleport(DDDFFLjava/util/Set;)V", at=@At("HEAD"), cancellable = true)
-    private void onTeleport(double d, double e, double f, float g, float h, Set<ClientboundPlayerPositionPacket.RelativeArgument> set, CallbackInfo ci) {
+    private void onTeleport(double d, double e, double f, float g, float h, Set<RelativeMovement> set, CallbackInfo ci) {
         Location oldLoc = new Location(ConversionUtil.toIdentifier(player.level.dimension().location()), new Vec3d(player.xOld, player.yOld, player.zOld), player.getRotationVector().x, player.getRotationVector().y);
         Location newLoc = new Location(ConversionUtil.toIdentifier(player.level.dimension().location()), new Vec3d(d, e, f), g, h);
 

@@ -57,7 +57,7 @@ public class LocationUtil {
         float yaw = location.getYaw();
         float pitch = location.getPitch();
 
-        BlockPos pos = new BlockPos(x,y,z);
+        BlockPos pos = new BlockPos((int) x, (int) y, (int) z);
 
         if(!world.isInWorldBounds(pos)) {
             MidnightCoreAPI.getLogger().warn("Unable to teleport entity! Position is invalid!");

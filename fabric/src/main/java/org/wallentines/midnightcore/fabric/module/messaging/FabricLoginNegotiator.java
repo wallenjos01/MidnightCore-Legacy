@@ -26,11 +26,13 @@ public class FabricLoginNegotiator implements LoginNegotiator {
     private final AtomicInteger transactionId = new AtomicInteger(1000);
     private final HashMap<Integer, TransactionInfo> currentTransactions = new HashMap<>();
     private final ServerLoginPacketListenerImpl packetListener;
+    private final Connection connection;
     private final UUID uuid;
 
 
-    public FabricLoginNegotiator(ServerLoginPacketListenerImpl packetListener, UUID uuid) {
+    public FabricLoginNegotiator(ServerLoginPacketListenerImpl packetListener, Connection connection, UUID uuid) {
         this.packetListener = packetListener;
+        this.connection = connection;
         this.uuid = uuid;
     }
 
@@ -42,11 +44,11 @@ public class FabricLoginNegotiator implements LoginNegotiator {
     public void sendMessage(Identifier id, FriendlyByteBuf data, LoginMessageHandler response) {
 
         data.resetReaderIndex();
-        TransactionInfo inf = new TransactionInfo(packetListener.connection, response);
+        TransactionInfo inf = new TransactionInfo(connection, response);
         int tid = transactionId.getAndIncrement();
         currentTransactions.put(tid, inf);
 
-        packetListener.connection.send(new ClientboundCustomQueryPacket(tid, ConversionUtil.toResourceLocation(id), data));
+        connection.send(new ClientboundCustomQueryPacket(tid, ConversionUtil.toResourceLocation(id), data));
     }
 
     @Override

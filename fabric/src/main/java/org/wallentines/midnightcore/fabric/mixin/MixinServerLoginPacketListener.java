@@ -22,7 +22,8 @@ import org.wallentines.midnightlib.event.Event;
 @Mixin(ServerLoginPacketListenerImpl.class)
 public class MixinServerLoginPacketListener {
 
-    @Shadow @Final public Connection connection;
+    @Shadow @Final
+    Connection connection;
     @Shadow @Final MinecraftServer server;
     @Shadow @Nullable GameProfile gameProfile;
     @Shadow ServerLoginPacketListenerImpl.State state;
@@ -44,7 +45,7 @@ public class MixinServerLoginPacketListener {
         // Check to see if negotiating has begun already
         if(mcore$negotiator == null) {
 
-            mcore$negotiator = new FabricLoginNegotiator((ServerLoginPacketListenerImpl) (Object) this, gameProfile == null ? null : gameProfile.getId());
+            mcore$negotiator = new FabricLoginNegotiator((ServerLoginPacketListenerImpl) (Object) this, connection, gameProfile == null ? null : gameProfile.getId());
             state = ServerLoginPacketListenerImpl.State.NEGOTIATING;
 
             // Send "Negotiating" packets

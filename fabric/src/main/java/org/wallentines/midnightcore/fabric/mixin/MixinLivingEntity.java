@@ -9,9 +9,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.wallentines.midnightcore.fabric.event.world.EntityDamageEvent;
-import org.wallentines.midnightcore.fabric.event.world.EntityDeathEvent;
-import org.wallentines.midnightcore.fabric.event.world.EntityEatEvent;
+import org.wallentines.midnightcore.fabric.event.entity.EntityDamageEvent;
+import org.wallentines.midnightcore.fabric.event.entity.EntityDeathEvent;
+import org.wallentines.midnightcore.fabric.event.entity.EntityEatEvent;
 import org.wallentines.midnightlib.event.Event;
 
 @Mixin(LivingEntity.class)
