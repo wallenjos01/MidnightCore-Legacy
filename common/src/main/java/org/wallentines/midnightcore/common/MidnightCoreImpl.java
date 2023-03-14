@@ -66,7 +66,7 @@ public class MidnightCoreImpl extends MidnightCoreAPI {
 
     public void setActiveServer(AbstractServer server) {
 
-        if(this.currentServer != server) this.currentServer.getModuleManager().unloadAll();
+        if(this.currentServer != server && this.currentServer != null) this.currentServer.getModuleManager().unloadAll();
         this.currentServer = server;
 
         if(server != null) {
