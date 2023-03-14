@@ -12,6 +12,9 @@ public class Adapters {
 
         SpigotAdapter adapter;
         switch(API_VERSION) {
+            case "v1_19_R3":
+                adapter = new Adapter_v1_19_R3();
+                break;
             case "v1_19_R2":
                 adapter = new Adapter_v1_19_R2();
                 break;
