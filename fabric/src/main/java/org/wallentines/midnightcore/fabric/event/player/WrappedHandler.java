@@ -10,32 +10,28 @@ import org.wallentines.midnightlib.event.Event;
 
 public record WrappedHandler(ServerPlayer player, Entity entity, ServerboundInteractPacket.Handler other) implements ServerboundInteractPacket.Handler {
 
-    @Override
-    public void onInteraction(@NotNull InteractionHand interactionHand) {
-        PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, entity, interactionHand, null);
+    private void handleInteract(InteractionHand hand, Vec3 location) {
+
+        PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, entity, hand, location);
         Event.invoke(event);
 
         if (event.isCancelled()) {
             if (event.shouldSwingArm()) {
-                player.swing(interactionHand);
+                player.swing(hand, true);
             }
         } else {
-            other.onInteraction(interactionHand);
+            other.onInteraction(hand);
         }
     }
 
     @Override
-    public void onInteraction(@NotNull InteractionHand interactionHand, @NotNull Vec3 vec3) {
-        PlayerInteractEntityEvent event = new PlayerInteractEntityEvent(player, entity, interactionHand, vec3);
-        Event.invoke(event);
+    public void onInteraction(@NotNull InteractionHand interactionHand) {
+        handleInteract(interactionHand, null);
+    }
 
-        if (event.isCancelled()) {
-            if (event.shouldSwingArm()) {
-                player.swing(interactionHand);
-            }
-        } else {
-            other.onInteraction(interactionHand, vec3);
-        }
+    @Override
+    public void onInteraction(@NotNull InteractionHand interactionHand, @NotNull Vec3 vec3) {
+        handleInteract(interactionHand, vec3);
     }
 
     @Override
@@ -47,7 +43,6 @@ public record WrappedHandler(ServerPlayer player, Entity entity, ServerboundInte
         if (!event.isCancelled()) {
             other.onAttack();
         }
-
     }
 
 }

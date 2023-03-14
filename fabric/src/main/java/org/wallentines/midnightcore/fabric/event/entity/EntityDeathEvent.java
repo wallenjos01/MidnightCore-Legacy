@@ -1,4 +1,4 @@
-package org.wallentines.midnightcore.fabric.event.world;
+package org.wallentines.midnightcore.fabric.event.entity;
 
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;

@@ -30,11 +30,11 @@ public abstract class MixinPlayerAdvancements implements AdvancementExtension {
 
     @Shadow public abstract void stopListening();
 
-    @Shadow @Final private Map<Advancement, AdvancementProgress> advancements;
+    @Shadow @Final private Map<Advancement, AdvancementProgress> progress;
 
     @Shadow @Final private Set<Advancement> visible;
 
-    @Shadow @Final private Set<Advancement> visibilityChanged;
+    @Shadow @Final private Set<Advancement> rootsToUpdate;
 
     @Shadow @Final private Set<Advancement> progressChanged;
 
@@ -43,8 +43,6 @@ public abstract class MixinPlayerAdvancements implements AdvancementExtension {
     @Shadow @Nullable private Advancement lastSelectedTab;
 
     @Shadow protected abstract void checkForAutomaticTriggers(ServerAdvancementManager serverAdvancementManager);
-
-    @Shadow protected abstract void ensureAllVisible();
 
     @Shadow protected abstract void registerListeners(ServerAdvancementManager serverAdvancementManager);
 
@@ -65,9 +63,9 @@ public abstract class MixinPlayerAdvancements implements AdvancementExtension {
     public void loadFromMap(Map<ResourceLocation, AdvancementProgress> map, ServerAdvancementManager serverAdvancementManager) {
 
         stopListening();
-        advancements.clear();
+        progress.clear();
         visible.clear();
-        visibilityChanged.clear();
+        rootsToUpdate.clear();
         progressChanged.clear();
         isFirstPacket = true;
         lastSelectedTab = null;
@@ -78,8 +76,8 @@ public abstract class MixinPlayerAdvancements implements AdvancementExtension {
         });
 
         checkForAutomaticTriggers(serverAdvancementManager);
-        ensureAllVisible();
         registerListeners(serverAdvancementManager);
+
         flushDirty(player);
     }
 
@@ -87,7 +85,7 @@ public abstract class MixinPlayerAdvancements implements AdvancementExtension {
     public Map<ResourceLocation, AdvancementProgress> saveToMap() {
 
         Map<ResourceLocation, AdvancementProgress> map = new HashMap<>();
-        advancements.forEach((adv, prog) -> {
+        progress.forEach((adv, prog) -> {
             FriendlyByteBuf copyBuf = new FriendlyByteBuf(Unpooled.buffer(256)); // Save and load for easy copying
             prog.serializeToNetwork(copyBuf);
             map.put(adv.getId(), AdvancementProgress.fromNetwork(copyBuf));
@@ -99,16 +97,16 @@ public abstract class MixinPlayerAdvancements implements AdvancementExtension {
     public void revokeAll(ServerAdvancementManager serverAdvancementManager) {
 
         stopListening();
-        advancements.clear();
+        progress.clear();
         visible.clear();
-        visibilityChanged.clear();
+        rootsToUpdate.clear();
         progressChanged.clear();
         isFirstPacket = true;
         lastSelectedTab = null;
 
         checkForAutomaticTriggers(serverAdvancementManager);
-        ensureAllVisible();
         registerListeners(serverAdvancementManager);
+
         flushDirty(player);
     }
 }
