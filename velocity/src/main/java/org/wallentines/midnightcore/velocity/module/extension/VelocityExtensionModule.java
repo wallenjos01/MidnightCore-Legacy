@@ -27,6 +27,7 @@ public class VelocityExtensionModule implements ServerExtensionModule {
 
     private final HashMap<String, HashMap<Identifier, Version>> enabledExtensions = new HashMap<>();
     private final List<Identifier> supportedExtensions = new ArrayList<>();
+    private MServer server;
 
     @Override
     public <T extends ServerExtension> T getExtension(Class<T> clazz) {
@@ -53,7 +54,14 @@ public class VelocityExtensionModule implements ServerExtensionModule {
     }
 
     @Override
+    public MServer getServer() {
+        return server;
+    }
+
+    @Override
     public boolean initialize(ConfigSection section, MServer server) {
+
+        this.server = server;
 
         MessagingModule mod = server.getModule(MessagingModule.class);
         if(mod == null) return false;

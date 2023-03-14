@@ -24,8 +24,12 @@ public abstract class AbstractServerExtensionModule implements ServerExtensionMo
 
     private MessagingModule messagingModule;
     private ByteBuf supportedPacket;
+    private MServer server;
+
     @Override
     public boolean initialize(ConfigSection section, MServer data) {
+
+        this.server = data;
 
         // Load Extensions
         manager.loadAll(section.getSection("extensions"), this, ServerExtension.REGISTRY);
@@ -61,6 +65,11 @@ public abstract class AbstractServerExtensionModule implements ServerExtensionMo
     @Override
     public void disable() {
         manager.unloadAll();
+    }
+
+    @Override
+    public MServer getServer() {
+        return server;
     }
 
     public boolean playerHasExtension(MPlayer player, Identifier id) {
