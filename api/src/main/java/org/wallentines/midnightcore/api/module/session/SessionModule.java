@@ -27,7 +27,7 @@ public interface SessionModule extends ServerModule {
 
     Collection<Session> getSessions();
 
-    HandlerList<Session.SessionShutdownEvent> shutdownEvent();
+    HandlerList<Session> shutdownEvent();
     HandlerList<Session.SessionPlayerEvent> joinEvent();
     HandlerList<Session.SessionPlayerEvent> leaveEvent();
 

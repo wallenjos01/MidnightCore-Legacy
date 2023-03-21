@@ -2,7 +2,9 @@ package org.wallentines.midnightcore.spigot.module.session;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.wallentines.mdcfg.ConfigSection;
 import org.wallentines.midnightcore.api.module.ServerModule;
@@ -30,6 +32,13 @@ public class SpigotSessionModule extends AbstractSessionModule implements Listen
         MPlayer mpl = SpigotPlayer.wrap(event.getPlayer());
         Session sess = getSession(mpl);
         if(sess != null) sess.removePlayer(mpl);
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    private void onJoin(PlayerJoinEvent event) {
+
+        MPlayer mpl = SpigotPlayer.wrap(event.getPlayer());
+        onJoin(mpl);
     }
 
     public static final ModuleInfo<MServer, ServerModule> MODULE_INFO = new ModuleInfo<MServer, ServerModule>(SpigotSessionModule::new, ID, new ConfigSection()).dependsOn(SpigotSavepointModule.ID);

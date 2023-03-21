@@ -5,6 +5,7 @@ import org.wallentines.midnightcore.api.module.session.Session;
 import org.wallentines.midnightcore.api.player.MPlayer;
 import org.wallentines.midnightcore.api.server.MServer;
 import org.wallentines.midnightcore.common.module.session.AbstractSessionModule;
+import org.wallentines.midnightcore.fabric.event.player.PlayerJoinEvent;
 import org.wallentines.midnightcore.fabric.event.player.PlayerLeaveEvent;
 import org.wallentines.midnightcore.fabric.module.savepoint.FabricSavepointModule;
 import org.wallentines.midnightcore.fabric.player.FabricPlayer;
@@ -21,6 +22,10 @@ public class FabricSessionModule extends AbstractSessionModule {
             MPlayer mpl = FabricPlayer.wrap(event.getPlayer());
             Session sess = getSession(mpl);
             if(sess != null) sess.removePlayer(mpl);
+        });
+        Event.register(PlayerJoinEvent.class, this, 5, event -> {
+            MPlayer mpl = FabricPlayer.wrap(event.getPlayer());
+            onJoin(mpl);
         });
         return super.initialize(section, data);
     }

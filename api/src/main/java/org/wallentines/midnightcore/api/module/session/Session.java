@@ -1,9 +1,10 @@
 package org.wallentines.midnightcore.api.module.session;
 
+import org.wallentines.midnightcore.api.module.savepoint.Savepoint;
+import org.wallentines.midnightcore.api.module.savepoint.SavepointModule;
 import org.wallentines.midnightcore.api.text.LangProvider;
 import org.wallentines.midnightcore.api.player.MPlayer;
 import org.wallentines.midnightcore.api.text.MComponent;
-import org.wallentines.midnightlib.event.Event;
 import org.wallentines.midnightlib.event.HandlerList;
 
 import java.util.Collection;
@@ -102,24 +103,17 @@ public interface Session {
 
     void tick();
 
-    HandlerList<SessionShutdownEvent> shutdownEvent();
+
+    Savepoint getSavepoint(MPlayer player);
+
+    SavepointModule getSavepointModule();
+
+    HandlerList<Session> shutdownEvent();
     HandlerList<SessionPlayerEvent> joinEvent();
     HandlerList<SessionPlayerEvent> leaveEvent();
 
-    class SessionShutdownEvent extends Event {
 
-        private final Session session;
-
-        public SessionShutdownEvent(Session session) {
-            this.session = session;
-        }
-
-        public Session getSession() {
-            return session;
-        }
-    }
-
-    class SessionPlayerEvent extends Event {
+    class SessionPlayerEvent {
 
         private final Session session;
         private final MPlayer player;

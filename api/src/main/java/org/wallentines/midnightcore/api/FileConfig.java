@@ -60,6 +60,15 @@ public class FileConfig extends FileWrapper<ConfigObject> {
         return fromWrapper(wrapper);
     }
 
+    @Override
+    public void load() {
+
+        super.load();
+        if(!(super.getRoot() instanceof ConfigSection)) {
+            setRoot(new ConfigSection());
+        }
+    }
+
     static {
 
         REGISTRY.registerFileCodec(JSONCodec.fileCodec());

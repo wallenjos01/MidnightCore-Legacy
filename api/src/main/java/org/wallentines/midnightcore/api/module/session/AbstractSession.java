@@ -22,6 +22,7 @@ public abstract class AbstractSession implements Session {
     protected static final Logger LOGGER = LogManager.getLogger("Session");
     public static final Random RANDOM = new Random();
 
+    private final HashMap<MPlayer, Savepoint> savepoints = new HashMap<>();
     private final UUID uid;
     private final SavepointModule spm;
     private final EnumSet<Savepoint.SaveFlag> flags;
@@ -32,7 +33,7 @@ public abstract class AbstractSession implements Session {
 
     private final Set<MPlayer> players = new HashSet<>();
 
-    private final HandlerList<SessionShutdownEvent> shutdownCallbacks = new HandlerList<>();
+    private final HandlerList<Session> shutdownCallbacks = new HandlerList<>();
     private final HandlerList<SessionPlayerEvent> joinCallbacks = new HandlerList<>();
     private final HandlerList<SessionPlayerEvent> leaveCallbacks = new HandlerList<>();
 
@@ -67,7 +68,11 @@ public abstract class AbstractSession implements Session {
         if(players.contains(player)) return false;
         if(!shouldAddPlayer(player)) return false;
 
-        spm.savePlayer(player, spId, flags);
+        Savepoint sp = spm.createSavepoint(spId, flags);
+        if(!sp.save(player)) {
+            return false;
+        }
+        savepoints.put(player, sp);
 
         players.add(player);
 
@@ -88,8 +93,10 @@ public abstract class AbstractSession implements Session {
 
         leaveEvent().invoke(new SessionPlayerEvent(this, player));
 
-        spm.loadPlayer(player, spId);
-        spm.removeSavePoint(player, spId);
+        Savepoint sp = savepoints.remove(player);
+        if(sp != null) {
+            sp.load(player);
+        }
 
         players.remove(player);
 
@@ -160,7 +167,7 @@ public abstract class AbstractSession implements Session {
             removePlayer(pl);
         }
 
-        shutdownCallbacks.invoke(new SessionShutdownEvent(this));
+        shutdownCallbacks.invoke(this);
 
         try {
             onShutdown();
@@ -188,7 +195,13 @@ public abstract class AbstractSession implements Session {
     }
 
     @Override
-    public HandlerList<SessionShutdownEvent> shutdownEvent() {
+    public Savepoint getSavepoint(MPlayer player) {
+
+        return savepoints.get(player);
+    }
+
+    @Override
+    public HandlerList<Session> shutdownEvent() {
         return shutdownCallbacks;
     }
 
@@ -201,7 +214,9 @@ public abstract class AbstractSession implements Session {
     public HandlerList<SessionPlayerEvent> leaveEvent() {
         return leaveCallbacks;
     }
-    protected SavepointModule getSavepointModule() {
+
+    @Override
+    public SavepointModule getSavepointModule() {
         return spm;
     }
 
