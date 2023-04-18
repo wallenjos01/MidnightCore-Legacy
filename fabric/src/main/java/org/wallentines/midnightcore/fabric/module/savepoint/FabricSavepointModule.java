@@ -31,6 +31,9 @@ public class FabricSavepointModule extends AbstractSavepointModule {
         pl.getFoodData().setFoodLevel(20);
         pl.getFoodData().eat(1, 20);
         pl.getFoodData().tick(pl);
+        pl.setExperienceLevels(0);
+        pl.setExperiencePoints(0);
+        pl.setArrowCount(0);
 
     }
 

@@ -97,6 +97,7 @@ public class FabricSavepoint extends AbstractSavepoint {
     public static final Serializer<AdvancementProgress> PROGRESS_SERIALIZER = new Serializer<>() {
         @Override
         public <O> SerializeResult<O> serialize(SerializeContext<O> context, AdvancementProgress value) {
+            if(value == null) return SerializeResult.failure("Value was null");
             return SerializeResult.success(GsonContext.INSTANCE.convert(context, AccessorPlayerAdvancements.getGson().toJsonTree(value)));
         }
 
@@ -154,7 +155,7 @@ public class FabricSavepoint extends AbstractSavepoint {
                 @Override
                 public <O> SerializeResult<O> serialize(SerializeContext<O> context, AdvancementData value) {
 
-                    SerializeResult<O> res = PROGRESS_SERIALIZER.mapOf(RESOURCE_LOCATION_SERIALIZER).serialize(context, value.advancements);
+                    SerializeResult<O> res = PROGRESS_SERIALIZER.filteredMapOf(RESOURCE_LOCATION_SERIALIZER).serialize(context, value.advancements);
                     if (!res.isComplete()) return res;
 
                     O out = res.getOrThrow();

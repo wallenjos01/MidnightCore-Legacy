@@ -41,10 +41,12 @@ public abstract class AbstractInventoryGUI implements InventoryGUI {
     @Override
     public int pageCount() {
 
-        int highestEnt = 0;
+        int highestEnt = -1;
         for(int i : entries.keySet()) {
             if(i > highestEnt) highestEnt = i;
         }
+
+        highestEnt += 1;
 
         return (int) Math.ceil((float) highestEnt / (float) ((pageSize == 0 ? 6 : pageSize) * 9));
     }
